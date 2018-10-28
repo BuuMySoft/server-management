@@ -10,8 +10,7 @@ xen_version=$(apt-cache search xen-linux-system | sed 's/-/ /g' | awk '{ print $
 apt-get install -qqy xen-hypervisor xen-linux-system-$xen_version xen-utils xen-tools
 
 # Changes boot order
-mv /etc/grub.d/06_OVHkernel /etc/grub.d/08_OVHkernel
-mv /etc/grub.d/20_linux_xen /etc/grub.d/06_linux_xen
+dpkg-divert --divert /etc/grub.d/08_linux_xen --rename /etc/grub.d/20_linux_xen
 update-grub
 
 # Removes the volume created during OVH installation
