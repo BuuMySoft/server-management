@@ -44,7 +44,7 @@ iface lo inet loopback
 EOF
 
 xen_bridge=xenbr0
-interface=$(ip -f inet a s | grep 2: | awk '{ print $2 }' | sed -e 's/://')
+interface=$(ip -f inet a s | grep BROADCAST | awk '{ print $2 }' | sed -e 's/://')
 ip=$(ip -f inet a s | grep inet | grep $interface | awk '{ print $2 }' | sed -e 's/\/24//')
 ip_without_last=$(echo $ip | sed -e 's/\./ /g' | awk '{ print $1"."$2"."$3 }')
 cat <<EOF > /etc/network/interfaces.d/10_xenbr0
