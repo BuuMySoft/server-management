@@ -63,5 +63,5 @@ EOF
 dist=`xt-guess-suite-and-mirror --suite`
 img_dir=/srv/deb/images/$dist
 mirror=`xt-guess-suite-and-mirror --mirror`
-mkdir -p $dist
+mkdir -p $img_dir
 xt-install-image --location=$img_dir --dist=$dist --install-method=debootstrap --mirror=$mirror
