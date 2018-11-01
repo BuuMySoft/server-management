@@ -21,7 +21,7 @@ mount_point=/to_be_removed
 volume=vg
 umount $mount_point
 pvcreate -f $dev
-vgcreate $volume
+vgcreate $volume $dev
 sed -i -e '/to_be_removed/d' /etc/fstab
 
 # Needed to create bridge interfaces
@@ -58,3 +58,10 @@ bridge_ports $interface
       gateway   ${ip_without_last}.254
       broadcast ${ip_without_last}.255
 EOF
+
+# Image
+dist=`xt-guess-suite-and-mirror --suite`
+img_dir=/srv/deb/images/$dist
+mirror=`xt-guess-suite-and-mirror --mirror`
+mkdir -p $dist
+xt-install-image --location=$img_dir --dist=$dist --install-method=debootstrap --mirror=$mirror
