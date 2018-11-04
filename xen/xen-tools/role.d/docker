@@ -33,7 +33,8 @@ installDebianPackage ${prefix} curl
 installDebianPackage ${prefix} gnupg2
 installDebianPackage ${prefix} software-properties-common
 
-chroot ${prefix} curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+chroot ${prefix} curl -fsSL https://download.docker.com/linux/debian/gpg -o /tmp/docker.gpg
+chroot ${prefix} apt-key add /tmp/docker.gpg
 chroot ${prefix} apt-key fingerprint 0EBFCD88
 chroot ${prefix} add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
 chroot ${prefix} apt-get update
