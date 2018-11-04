@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  This role installs docker upon the new guest system.
+#  This role installs portainer agent upon the new guest system.
 #
 #
 
@@ -38,7 +38,7 @@ installDebianPackage ${prefix} docker service create \
     --mount type=bind,src=//var/lib/docker/volumes,dst=/var/lib/docker/volumes \
     portainer/agent
 
-    
+
 #
 #  Log our finish
 #
