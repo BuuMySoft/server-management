@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+#  This role installs docker upon the new guest system.
+#
+#
+
+prefix=$1
+
+#
+#  Source our common functions - this will let us install a Debian package.
+#
+if [ -e /usr/share/xen-tools/common.sh ]; then
+    . /usr/share/xen-tools/common.sh
+else
+    echo "Installation problem"
+fi
+
+
+
+#
+# Log our start
+#
+logMessage Script $0 starting
+
+
+#
+#  Install docker
+#
+chroot ${prefix} apt-get update
+installDebianPackage ${prefix} apt-transport-https
+installDebianPackage ${prefix} ca-certificates
+installDebianPackage ${prefix} curl
+installDebianPackage ${prefix} gnupg2
+installDebianPackage ${prefix} software-properties-common
+
+chroot ${prefix} curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+chroot ${prefix} apt-key fingerprint 0EBFCD88
+chroot ${prefix} add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+chroot ${prefix} apt-get update
+installDebianPackage ${prefix} docker-ce
+chroot ${prefix} curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chroot ${prefix} chmod +x /usr/local/bin/docker-compose
+
+#
+#  Log our finish
+#
+logMessage Script $0 finished
