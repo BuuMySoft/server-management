@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  rundeck:
+    image: rundeck/rundeck:SNAPSHOT
+    links:
+      - mysql-server
+    depends_on:
+      - mysql-server
+    environment:
+      RUNDECK_GRAILS_URL: http://test.portainer.buumy-soft.com:4440
+      RUNDECK_DATABASE_DRIVER: com.mysql.jdbc.Driver
+      RUNDECK_DATABASE_USERNAME: rundeck
+      RUNDECK_DATABASE_PASSWORD: rundeck
+      RUNDECK_DATABASE_URL: jdbc:mysql://mysql-server/rundeck?autoReconnect=true&useSSL=false
+    ports:
+      - 4440:4440
+    volumes:
+      - rundeck_data:/home/rundeck/server/data
+  mysql-server:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=rundeck
+      - MYSQL_USER=rundeck
+      - MYSQL_PASSWORD=rundeck
+    volumes:
+      - rundeck_db:/var/lib/mysql
+volumes:
+  rundeck_db:
+  rundeck_data:
