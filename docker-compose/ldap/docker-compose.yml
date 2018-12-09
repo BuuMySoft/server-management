@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  ldap:
+    image: osixia/openldap
+    environment:
+      - LDAP_ORGANISATION=${LDAP_ORGANISATION}
+      - LDAP_DOMAIN=${LDAP_DOMAIN}
+      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
+    volumes:
+      - ldap_var:/var/lib/ldap
+      - ldap_etc:/etc/ldap/slapd.d
+
+  ldap-admin:
+    image: osixia/phpldapadmin
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=ldap
+volumes:
+  ldap_var:
+  ldap_etc:
