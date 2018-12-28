@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#
+gerrit_dir=/srv/gerrit
+sudo rm -fr $gerrit_dir
+mkdir -p $gerrit_dir/cache
+mkdir -p $gerrit_dir/etc
+mkdir -p $gerrit_dir/git
+mkdir -p $gerrit_dir/index
+sudo mkdir -p $gerrit_dir/db
+sudo mkdir -p $gerrit_dir/ldap/var
+sudo mkdir -p $gerrit_dir/ldap/etc
+# Comment the entrypoint
+echo "Commenting entrypoint in docker compose configuration"
+sed -i '/^ *entrypoint/s/^/#/' docker-compose.yml
+# Launch Postgres
+echo "Launching postgres"
+docker-compose up -d postgres
+# Wait for postgres to be ready
+sleep_duration=10s
+echo "Going to sleep to wait for postgres. Duration: $sleep_duration"
+sleep $sleep_duration
+# Copy configuration files
+cp /vagrant/*.config $gerrit_dir/etc
+# Uncomment the entrypoint
+echo "Uncommenting entrypoint in docker compose configuration"
+sed -i 's/#//' docker-compose.yml
+# Initializes Gerrit
+echo "Initializing Gerrit"
+docker-compose up gerrit
+# Starts
+# Wait for postgres to be ready
+sleep_duration=10s
+echo "Going to sleep to wait for gerrit initialization. Duration: $sleep_duration"
+sleep $sleep_duration
+# Comment the entrypoint
+echo "Commenting entrypoint in docker compose configuration"
+sed -i '/^ *entrypoint/s/^/#/' docker-compose.yml
+echo "Launching gerrit"
+docker-compose up -d

@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  gerrit:
+    image: gerritcodereview/gerrit
+    ports:
+      - "29418:29418"
+      - "80:8080"
+    links:
+      - postgres
+    depends_on:
+      - postgres
+      - ldap
+    volumes:
+      - /srv/gerrit/etc:/var/gerrit/etc
+      - /srv/gerrit/git:/var/gerrit/git
+      - /srv/gerrit/index:/var/gerrit/index
+      - /srv/gerrit/cache:/var/gerrit/cache
+    environment:
+      # The following line is necessary to prevent the gerrit container
+      # from overriding the properties gerrit.canonicalWebUrl
+      - CANONICAL_WEB_URL=http://gerrit.domain.com
+#    entrypoint: java -jar /var/gerrit/bin/gerrit.war init -d /var/gerrit
+
+  postgres:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=gerrit
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=reviewdb
+    volumes:
+      - /srv/gerrit/db:/var/lib/postgresql/data
+
+  ldap:
+    image: osixia/openldap
+    ports:
+      - "389:389"
+      - "636:636"
+    environment:
+      - LDAP_ADMIN_PASSWORD=secret
+    volumes:
+      - /srv/gerrit/ldap_var:/var/lib/ldap
+      - /srv/gerrit/ldap_etc:/etc/ldap/slapd.d
+
+  ldap-admin:
+    image: osixia/phpldapadmin
+    ports:
+      - "6443:443"
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=ldap
