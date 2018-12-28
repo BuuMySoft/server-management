@@ -16,6 +16,8 @@ services:
 
   ldap-admin:
     image: osixia/phpldapadmin
+    links:
+      - ldap
     ports:
       - "6443:443"
     environment:
